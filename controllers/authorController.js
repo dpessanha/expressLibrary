@@ -1,8 +1,14 @@
 var Author = require('../models/author');
 
 // List all authors
-exports.author_index_route = function(req, res) {
-    res.send('NOT IMPLEMENTED: Author INDEX ROUTE');
+exports.author_index_route = function(req, res, next) {
+    Author.find()
+      .sort( [ [ 'family name', 'ascending' ] ] )
+      .exec(function(err, list_authors) {
+        if(err) { return next(err); }
+        // Successful, so render
+        res.render('author_list', { title: 'Author List', author_list: list_authors });
+      });
 };
 
 // Show new author form
