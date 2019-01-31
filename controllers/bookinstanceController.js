@@ -1,4 +1,8 @@
-var BookInstance = require('../models/bookinstance');
+const BookInstance  = require('../models/bookinstance');
+const Book          = require('../models/book');
+
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody }          = require('express-validator/filter');
 
 // List all bookInstances
 exports.bookinstance_index_route = function(req, res, next) {
@@ -12,14 +16,63 @@ exports.bookinstance_index_route = function(req, res, next) {
 };
 
 // Show new bookInstance form
-exports.bookinstance_new_route = function(req, res) {
-  res.send('NOT IMPLEMENTED: BookInstance NEW ROUTE');
+exports.bookinstance_new_route = function(req, res, next) {
+  Book.find({},'title')
+  .exec(function (err, books) {
+    if (err) { return next(err); }
+    // Successful, so render.
+    res.render('bookinstance_form', {title: 'Create BookInstance', book_list:books});
+  });  
 };
 
 // Create a new bookInstance, then redirect somewhere	
-exports.bookinstance_create_route = function(req, res) {
-  res.send('NOT IMPLEMENTED: BookInstance CREATE ROUTE');
-};
+exports.bookinstance_create_route = [
+  // Validate fields.
+  body('book', 'Book must be specified').isLength({ min: 1 }).trim(),
+  body('imprint', 'Imprint must be specified').isLength({ min: 1 }).trim(),
+  body('due_back', 'Invalid date').optional({ checkFalsy: true }).isISO8601(),
+    
+  // Sanitize fields.
+  sanitizeBody('book').trim().escape(),
+  sanitizeBody('imprint').trim().escape(),
+  sanitizeBody('status').trim().escape(),
+  sanitizeBody('due_back').toDate(),
+    
+  // Process request after validation and sanitization.
+  (req, res, next) => {
+
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    // Create a BookInstance object with escaped and trimmed data.
+    var bookinstance = new BookInstance(
+      { book: req.body.book,
+        imprint: req.body.imprint,
+        status: req.body.status,
+        due_back: req.body.due_back
+      }
+    );
+
+      if (!errors.isEmpty()) {
+        // There are errors. Render form again with sanitized values and error messages.
+        Book.find({},'title')
+          .exec(function (err, books) {
+            if (err) { return next(err); }
+              // Successful, so render.
+              res.render('bookinstance_form', { title: 'Create BookInstance', book_list : books, selected_book : bookinstance.book._id , errors: errors.array(), bookinstance:bookinstance });
+          });
+          return;
+      }
+      else {
+        // Data from form is valid.
+        bookinstance.save(function (err) {
+        if (err) { return next(err); }
+          // Successful - redirect to new record.
+          res.redirect(bookinstance.url);
+        });
+      }
+  }  
+];
 
 // Show info about one specific bookInstance		
 exports.bookinstance_show_route = function(req, res, next) {
