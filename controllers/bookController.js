@@ -49,8 +49,28 @@ exports.book_create_route = function(req, res) {
 };
 
 // Show info about one specific book
-exports.book_show_route = function(req, res) {
-  res.send('NOT IMPLEMENTED: Book SHOW ROUTE');
+exports.book_show_route = function(req, res, next) {
+  async.parallel({
+    book: function(callback) {
+      Book.findById(req.params.id)
+        .populate('author')
+        .populate('genre')
+        .exec(callback);
+    },
+    book_instance: function(callback) {
+      BookInstance.find({ 'book': req.params.id })
+      .exec(callback);
+    },
+  }, function(err, results) {
+    if (err) { return next(err); }
+      if (results.book==null) { // No results.
+        var err = new Error('Book not found');
+        err.status = 404;
+        return next(err);
+      }
+    // Successful, so render.
+    res.render('book_detail', { title: 'Title', book: results.book, book_instances: results.book_instance } );
+  });
 };
 
 // Show edit form for one specific book

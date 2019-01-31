@@ -1,4 +1,6 @@
-var Author = require('../models/author');
+const Author  = require('../models/author');
+const Book    = require('../models/book');
+const async   = require('async');
 
 // List all authors
 exports.author_index_route = function(req, res, next) {
@@ -22,8 +24,26 @@ exports.author_create_route = function(req, res) {
 };
 
 // Show info about one specific author
-exports.author_show_route = function(req, res) {
-  res.send('NOT IMPLEMENTED: Author SHOW ROUTE');
+exports.author_show_route = function(req, res, next) {
+  async.parallel ({
+    author: function(callback) {
+      Author.findById(req.params.id)
+        .exec(callback)
+    },
+    authors_books: function(callback) {
+      Book.find({ 'author': req.params.id }, 'title summary')
+        .exec(callback)
+    },
+  }, function(err, results) {
+    if(err) { return next(err);}
+    if(results.author==null) {
+      var err = new Error('Author not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render('author_detail', { title: 'Author Detail', author: results.author, author_books: results.authors_books });
+  });
 };
 
 // Show edit form for one specific author

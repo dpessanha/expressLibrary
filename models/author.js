@@ -24,28 +24,28 @@ AuthorSchema
 .virtual('lifespan')
 .get(function () {
   // return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString();
-  return this.date_of_death ? moment(this.date_of_death).format('YYYY-MM-DD') : '';
+  return this.date_of_death ? moment(this.date_of_death).format('YYYY/MM/Do') : '';
 });
 
 // Virtual for author's lifespan
 AuthorSchema
 .virtual('birth')
 .get(function () {
-  return this.date_of_birth ? moment(this.date_of_birth).format('YYYY-MM-DD') : '';
+  return this.date_of_birth ? moment(this.date_of_birth).format('YYYY/MM/Do') : '';
 });
 
 // Virtual for author's lifespan
 AuthorSchema
 .virtual('death')
 .get(function () {
-  return this.date_of_death ? moment(this.date_of_death).format('YYYY-MM-DD') : '';
+  return this.date_of_death ? moment(this.date_of_death).format('YYYY/MM/Do') : '';
 });
 
 // Virtual for author's URL
 AuthorSchema
 .virtual('url')
 .get(function () {
-  return '/catalog/author/' + this._id;
+  return '/catalog/authors/' + this._id;
 });
 
 //Export model

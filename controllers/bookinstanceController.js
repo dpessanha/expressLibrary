@@ -22,8 +22,19 @@ exports.bookinstance_create_route = function(req, res) {
 };
 
 // Show info about one specific bookInstance		
-exports.bookinstance_show_route = function(req, res) {
-  res.send('NOT IMPLEMENTED: BookInstance SHOW ROUTE');
+exports.bookinstance_show_route = function(req, res, next) {
+  BookInstance.findById(req.params.id)
+  .populate('book')
+  .exec(function(err, bookinstance) {
+    if(err) {return next(err);}
+    if(bookinstance==null) {
+      var err = new Error('Book copy not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render('bookinstance_detail', { title: 'Book:', bookinstance: bookinstance });
+  });
 };
 
 // Show edit form for one specific bookInstance			

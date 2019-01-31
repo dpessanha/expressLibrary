@@ -16,13 +16,13 @@ var BookInstanceSchema = new Schema(
 BookInstanceSchema
 .virtual('url')
 .get(function () {
-  return '/catalog/bookinstance/' + this._id;
+  return '/catalog/bookinstances/' + this._id;
 });
 
 BookInstanceSchema
 .virtual('due_back_formatted')
 .get(function() {
-  return moment(this.due_back).format('Do MMMM, YYYY');
+  return moment(this.due_back).format('Do/MMMM/YYYY');
 });
 
 //Export model
