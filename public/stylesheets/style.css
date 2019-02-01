@@ -14,3 +14,19 @@ a {
   padding: 0;
   list-style: none;
 }
+
+#editForm {
+  float: left;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+#deleteForm {
+  float: left;
+  margin-top: -11px;
+}
+
+#createForm {
+  float: left;
+  margin-top: -11px;
+}

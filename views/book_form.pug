@@ -2,8 +2,7 @@ extends layout
 
 block content
   h1= title
-
-  form(method='POST' action='/catalog/books')
+  form#createForm(method='POST' action='/catalog/books')
     div.form-group
       label(for='title') Title:
       input#title.form-control(
@@ -66,7 +65,10 @@ block content
             
             label(for=genre._id) #{genre.name}
     
-    button.btn.btn-primary(type='submit') Submit
+    button.btn.btn-primary(type='submit') Create Book
+
+  form#editForm(action="/catalog/books/" + book._id + "?_method=PUT", method="POST")
+    button.btn.btn-warning(type='submit') Edit Book
 
   if errors 
     ul

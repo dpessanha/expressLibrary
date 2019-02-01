@@ -34,7 +34,12 @@ block content
       p There are no copies of this book in the library.
 
   hr
-  form(action="/catalog/books/" + book._id + "?_method=DELETE" method="POST")
-    .form-group
-      input#bookid.form-control(type="hidden", name="bookid", required="true", value=book._id) 
-    button.btn.btn-danger(type="submit") Delete Book
+  .container
+    form#editForm(action= book.url + '/edit' method='GET')
+      .form-group
+        button.btn.btn-warning(type='submit') Edit Book 
+
+    form#deleteForm(action="/catalog/books/" + book._id + "?_method=DELETE" method="POST")
+      .form-group
+        input#bookid.form-control(type="hidden", name="bookid", required="true", value=book._id) 
+      button.btn.btn-danger(type="submit") Delete Book
