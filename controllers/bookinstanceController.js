@@ -100,7 +100,11 @@ exports.bookinstance_update_route = function(req, res) {
   res.send('NOT IMPLEMENTED: BookInstance UPDATE ROUTE');
 };
 
-// Delete a particular bookInstance, then redirect somewhere				
-exports.bookinstance_destroy_route = function(req, res) {
-  res.send('NOT IMPLEMENTED: BookInstance DESTROY ROUTE');
+// Delete a particular bookinstance, then redirect somewhere	
+exports.bookinstance_destroy_route = function(req, res, next) {
+  BookInstance.findByIdAndRemove(req.body.bookInstanceid, function(err) {
+    if(err) { return next(err); }
+      // Success, so go to bookinstances list
+      res.redirect('/catalog/bookinstances')
+    });
 };

@@ -162,7 +162,11 @@ exports.book_update_route = function(req, res) {
   res.send('NOT IMPLEMENTED: Book UPDATE ROUTE');
 };
 
-// Delete a particular book, then redirect somewhere
-exports.book_destroy_route = function(req, res) {
-  res.send('NOT IMPLEMENTED: Book DESTROY ROUTE');
+// Delete a particular book, then redirect somewhere	
+exports.book_destroy_route = function(req, res, next) {
+  Book.findByIdAndRemove(req.body.bookid, function(err) {
+    if(err) { return next(err); }
+      // Success, so go to authors list
+      res.redirect('/catalog/books')
+    });
 };

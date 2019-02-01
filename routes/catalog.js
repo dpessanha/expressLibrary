@@ -56,8 +56,11 @@ router.get('/authors/:id/edit', author_controller.author_edit_route);
 // UPDATE ROUTE
 router.put('/authors/:id', author_controller.author_update_route);
 
+// DESTROY ROUTE (GET)
+router.get('/authors/:id/delete', author_controller.author_destroy_route_get);
+
 // DESTROY ROUTE
-router.delete('/authors/:id', author_controller.author_destroy_route);
+router.delete('/authors/:id', author_controller.author_destroy_route_delete);
 
 
 
@@ -82,8 +85,11 @@ router.get('/genres/:id/edit', genre_controller.genre_edit_route);
 // UPDATE ROUTE
 router.put('/genres/:id', genre_controller.genre_update_route);
 
+// DESTROY ROUTE (GET)
+router.get('/genres/:id/delete', genre_controller.genre_destroy_route_get);
+
 // DESTROY ROUTE
-router.delete('/genres/:id', genre_controller.genre_destroy_route);
+router.delete('/genres/:id', genre_controller.genre_destroy_route_delete);
 
 
 
